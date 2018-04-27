@@ -1,0 +1,80 @@
+import io.swagger.codegen.DefaultGenerator
+import io.swagger.codegen.config.CodegenConfigurator
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("io.swagger:swagger-codegen:${swaggerCodegenVersion}")
+    }
+}
+
+def inputSpec = file("$rootProject.projectDir/contracts/${project.name}.yml").path
+def outputDir = file('build/generated/swagger')
+def testOutputDir = file('build/generated/swagger-test')
+
+task generateClient {
+    inputs.file(inputSpec)
+    outputs.dir(testOutputDir)
+    doLast {
+        def config = new CodegenConfigurator()
+        config.inputSpec = inputSpec
+        config.outputDir = testOutputDir.path
+        config.modelNameSuffix = 'Dto'
+        config.lang = 'java'
+        config.library = 'feign'
+        config.addDynamicProperty('interfaceOnly', 'true')
+        config.addDynamicProperty('java8', 'true')
+
+
+        config.additionalProperties = [
+                'invokerPackage': "com.dell.${project.name}.generated.client".toString(),
+                'modelPackage'  : "com.dell.${project.name}.generated.model".toString(),
+                'apiPackage'    : "com.dell.${project.name}.generated.client.api".toString(),
+                'dateLibrary'   : 'java8',
+                'useTags'       : true
+        ]
+        new DefaultGenerator().opts(config.toClientOptInput()).generate()
+    }
+}
+
+task generateServer {
+    inputs.file(inputSpec)
+    outputs.dir(outputDir)
+    doLast {
+        def config = new CodegenConfigurator()
+        config.inputSpec = inputSpec
+        config.outputDir = outputDir.path
+        config.modelNameSuffix = 'Dto'
+        config.lang = 'spring'
+        config.addDynamicProperty('interfaceOnly', 'true')
+        config.addDynamicProperty('java8', 'true')
+        config.additionalProperties = [
+                'modelPackage': "com.dell.${project.name}.generated.model".toString(),
+                'apiPackage'  : "com.dell.${project.name}.generated.server.api".toString(),
+                'dateLibrary' : 'java8',
+                'useTags'     : true
+        ]
+        new DefaultGenerator().opts(config.toClientOptInput()).generate()
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir file("${project.buildDir.path}/generated/swagger/src/main/java")
+        }
+        test {
+            java {
+                srcDir file("${project.buildDir.path}/generated/swagger-test/src/main/java")
+            }
+        }
+    }
+}
+
+compileJava.dependsOn generateServer
+compileTestJava.dependsOn generateClient

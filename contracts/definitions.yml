@@ -1,0 +1,21 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+definitions:
+  Base:
+    type: object
+    properties:
+      id:
+        type: string
+
+  Error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string

@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    maxActive: 20
+    maxIdle: 20
+    minIdle: 15
+    initialSize: 15
+    properties:
+      hibernate.format_sql: true
+
+logging:
+  level:
+    org.springframework: ERROR
+    org.springframework.web: INFO
+    org.flywaydb.core.internal.dbsupport.SqlScript: INFO
+    com.dell: INFO

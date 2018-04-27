@@ -1,0 +1,159 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: Customers Service
+  description: CRUD API for Customer
+host: localhost
+basePath: /api/v1
+schemes:
+  - http
+  - https
+produces:
+  - application/json
+paths:
+  /customers:
+    get:
+      description: Get the customers matching search criteria
+      operationId: getCustomers
+      parameters:
+        -
+          name: name
+          in: query
+          description: part of the customer name
+          required: false
+          type: string
+        -
+          name: email
+          in: query
+          description: customer email
+          required: false
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Customer'
+        default:
+          description: unexpected error
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
+      tags:
+        - Customers
+    post:
+      description: Creates a new Customer
+      operationId: addCustomer
+      consumes:
+        - application/json
+      parameters:
+        -
+          name: customer
+          in: body
+          description: Customer to add
+          required: true
+          schema:
+            $ref: '#/definitions/Customer'
+      responses:
+        201:
+          description: Customer created
+          schema:
+            $ref: '#/definitions/Customer'
+        default:
+          description: unexpected error
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
+      tags:
+        - Customers
+
+  /customers/{id}:
+    get:
+      description: Returns a Customer based on a single ID
+      operationId: getCustomer
+      parameters:
+        -
+          name: id
+          in: path
+          description: id of Customer to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Customer'
+        404:
+          description: Customer not found
+        default:
+          description: unexpected error
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
+      tags:
+        - Customers
+    put:
+      description: update a Customer based on the ID supplied
+      operationId: updateCustomer
+      consumes:
+        - application/json
+      parameters:
+        -
+          name: id
+          in: path
+          description: id of Customer to be updated
+          required: true
+          type: string
+        -
+          name: customer
+          in: body
+          description: Customer to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Customer'
+      responses:
+        200:
+          description: Customer updated
+          schema:
+            $ref: '#/definitions/Customer'
+        404:
+          description: PricePlan not found
+        default:
+          description: unexpected error
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
+      tags:
+        - Customers
+    delete:
+      description: deletes a Customer based on the ID supplied
+      operationId: deleteCustomer
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID of Customer to delete
+          required: true
+          type: string
+      responses:
+        204:
+          description: Customer deleted
+        404:
+          description: Customer not found
+        default:
+          description: unexpected error
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
+      tags:
+        - Customers
+
+definitions:
+  Customer:
+    allOf:
+      - $ref: './definitions.yml#/definitions/Base'
+      - type: "object"
+        required:
+          - name
+          - email
+        properties:
+          name:
+            type: string
+          email:
+            type: string

@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: customers-service
+  aop:
+    proxy-target-class: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    testOnBorrow: true
+    testWhileIdle: true
+    validationInterval: 30000
+    validationQuery: SELECT 1
+    timeBetweenEvictionRunsMillis: 30000
+    minEvictableIdleTimeMillis: 60000
+    removeAbandoned: false
+    maxAge: 1800000
+    logValidationErrors: true
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.temp.use_jdbc_metadata_defaults: false
+    database: POSTGRESQL
+    hibernate:
+      event.merge.entity_copy_observer: allow # allows different instances to be merged on cascade=merge.
+      ddl-auto: none
+  open-in-view: false
+
+  flyway:
+    locations: classpath:db/migration
+
+server:
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+
