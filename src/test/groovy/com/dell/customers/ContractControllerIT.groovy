@@ -1,5 +1,6 @@
 package com.dell.customers
 
+import org.flywaydb.test.annotation.FlywayTest;
 import com.dell.customers.generated.model.CustomerDto
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
@@ -8,6 +9,7 @@ import spock.lang.Subject
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
+@FlywayTest(locationsForMigrate = ["classpath:db/testdata/customers"], overrideLocations = false)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = [])
 @ContextConfiguration
 @Subject(CustomersController)

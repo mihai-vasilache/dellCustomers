@@ -1,0 +1,32 @@
+apply plugin: 'groovy'
+
+sourceSets {
+    test {
+        groovy {
+            exclude { FileTreeElement elem -> elem.file.name.endsWith('IT.groovy') }
+        }
+    }
+    integrationTest {
+        groovy {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDirs = ['src/test/groovy']
+            exclude { FileTreeElement elem -> elem.file.name.endsWith('Test.groovy') }
+
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test

@@ -25,7 +25,6 @@ spring:
       event.merge.entity_copy_observer: allow # allows different instances to be merged on cascade=merge.
       ddl-auto: none
   open-in-view: false
-
   flyway:
     locations: classpath:db/migration
 

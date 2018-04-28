@@ -1,15 +1,49 @@
 apply plugin: 'jacoco'
 
-
 jacoco {
     toolVersion = '0.8.1'
     reportsDir = file("$buildDir/reports/coverage")
 }
 
+test {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacoco.exec")
+    }
+}
+
+integrationTest {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacoco-it.exec")
+    }
+}
+
 jacocoTestReport {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: ['**/generated/**',
+                                         '**/*MapperImpl.class',
+                                         '**/config/**'])
+        })
+    }
+}
+
+task integrationTestReport(type: JacocoReport) {
+    executionData integrationTest
+    sourceSets sourceSets.main
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: ['**/generated/**',
+                                         '**/*MapperImpl.class'])
+        })
+    }
     reports {
         xml.enabled false
         csv.enabled false
-        html.destination "${buildDir}/jacocoHtml"
+        html.destination file("${buildDir}/reports/coverage-it")
     }
 }
+
+integrationTest.finalizedBy integrationTestReport
+test.finalizedBy jacocoTestReport

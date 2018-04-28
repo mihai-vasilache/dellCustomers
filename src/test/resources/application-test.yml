@@ -11,7 +11,7 @@ spring:
     show-sql: true
 
 flyway:
-  locations: classpath:migration/common,classpath:migration/test-data
+  locations: classpath:db/migration,classpath:db/testdata/common
 
 logging:
   level:
