@@ -6,6 +6,5 @@ CREATE TABLE customers (
 	last_modified_on TIMESTAMP NOT NULL DEFAULT now(),
 	version INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
+	CONSTRAINT uk_email UNIQUE (email)
 );
-
-CREATE UNIQUE INDEX email_unique_idx on customers (LOWER(email));

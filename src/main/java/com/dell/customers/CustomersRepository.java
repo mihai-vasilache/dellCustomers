@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomersRepository extends JpaRepository<Customer, String> {
 
@@ -14,5 +15,5 @@ public interface CustomersRepository extends JpaRepository<Customer, String> {
             "order by c.name")
     List<Customer> findByNameOrEmail(String name, String email);
 
-    Customer findByEmailIgnoreCase(String email);
+    Optional<Customer> findByEmailIgnoreCase(String email);
 }

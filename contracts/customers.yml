@@ -63,6 +63,10 @@ paths:
           description: Cannot add custemers using id. Use PUT /customers/{id} instead
           schema:
             $ref: './definitions.yml#/definitions/Error'
+        412:
+          description: Invalid parameter
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
         default:
           description: unexpected error
           schema:
@@ -70,83 +74,83 @@ paths:
       tags:
         - Customers
 
-  /customers/{id}:
-    get:
-      description: Returns a Customer based on a single ID
-      operationId: getCustomer
-      parameters:
-        -
-          name: id
-          in: path
-          description: id of Customer to fetch
-          required: true
-          type: string
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/Customer'
-        404:
-          description: Customer not found
-        default:
-          description: unexpected error
-          schema:
-            $ref: './definitions.yml#/definitions/Error'
-      tags:
-        - Customers
-    put:
-      description: update a Customer based on the ID supplied
-      operationId: updateCustomer
-      consumes:
-        - application/json
-      parameters:
-        -
-          name: id
-          in: path
-          description: id of Customer to be updated
-          required: true
-          type: string
-        -
-          name: customer
-          in: body
-          description: Customer to be updated
-          required: true
-          schema:
-            $ref: '#/definitions/Customer'
-      responses:
-        200:
-          description: Customer updated
-          schema:
-            $ref: '#/definitions/Customer'
-        404:
-          description: Customer not found
-        default:
-          description: unexpected error
-          schema:
-            $ref: './definitions.yml#/definitions/Error'
-      tags:
-        - Customers
-    delete:
-      description: deletes a Customer based on the ID supplied
-      operationId: deleteCustomer
-      parameters:
-        -
-          name: id
-          in: path
-          description: ID of Customer to delete
-          required: true
-          type: string
-      responses:
-        204:
-          description: Customer deleted
-        404:
-          description: Customer not found
-        default:
-          description: unexpected error
-          schema:
-            $ref: './definitions.yml#/definitions/Error'
-      tags:
-        - Customers
+#  /customers/{id}:
+#    get:
+#      description: Returns a Customer based on a single ID
+#      operationId: getCustomer
+#      parameters:
+#        -
+#          name: id
+#          in: path
+#          description: id of Customer to fetch
+#          required: true
+#          type: string
+#      responses:
+#        200:
+#          description: OK
+#          schema:
+#            $ref: '#/definitions/Customer'
+#        404:
+#          description: Customer not found
+#        default:
+#          description: unexpected error
+#          schema:
+#            $ref: './definitions.yml#/definitions/Error'
+#      tags:
+#        - Customers
+#    put:
+#      description: update a Customer based on the ID supplied
+#      operationId: updateCustomer
+#      consumes:
+#        - application/json
+#      parameters:
+#        -
+#          name: id
+#          in: path
+#          description: id of Customer to be updated
+#          required: true
+#          type: string
+#        -
+#          name: customer
+#          in: body
+#          description: Customer to be updated
+#          required: true
+#          schema:
+#            $ref: '#/definitions/Customer'
+#      responses:
+#        200:
+#          description: Customer updated
+#          schema:
+#            $ref: '#/definitions/Customer'
+#        404:
+#          description: Customer not found
+#        default:
+#          description: unexpected error
+#          schema:
+#            $ref: './definitions.yml#/definitions/Error'
+#      tags:
+#        - Customers
+#    delete:
+#      description: deletes a Customer based on the ID supplied
+#      operationId: deleteCustomer
+#      parameters:
+#        -
+#          name: id
+#          in: path
+#          description: ID of Customer to delete
+#          required: true
+#          type: string
+#      responses:
+#        204:
+#          description: Customer deleted
+#        404:
+#          description: Customer not found
+#        default:
+#          description: unexpected error
+#          schema:
+#            $ref: './definitions.yml#/definitions/Error'
+#      tags:
+#        - Customers
 
 definitions:
   Customer:
@@ -161,3 +165,4 @@ definitions:
             type: string
           email:
             type: string
+            format: email

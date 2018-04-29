@@ -13,6 +13,7 @@ public interface CustomerMapper {
 
     CustomerDto toDto(Customer contract);
 
+    @Mapping(target = "id", ignore = true)
     Customer update(Customer source, @MappingTarget Customer destination);
 
 }

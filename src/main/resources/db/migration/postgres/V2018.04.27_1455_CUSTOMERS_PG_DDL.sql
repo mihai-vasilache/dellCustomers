@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX email_unique_idx on customers (LOWER(email));

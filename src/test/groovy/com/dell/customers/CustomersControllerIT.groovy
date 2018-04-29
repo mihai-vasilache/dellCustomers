@@ -7,7 +7,10 @@ import feign.FeignException
 import org.flywaydb.test.annotation.FlywayTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.TestExecutionListeners
+import org.springframework.transaction.annotation.EnableTransactionManagement
+import org.springframework.transaction.annotation.Transactional
 import spock.lang.Subject
 
 import javax.persistence.EntityManager
@@ -15,7 +18,9 @@ import javax.persistence.PersistenceContext
 
 import static com.dell.customers.CustomersTestData.customerDto
 import static com.dell.customers.CustomersTestData.testUUID
+import static org.springframework.http.HttpStatus.BAD_REQUEST
 import static org.springframework.http.HttpStatus.NOT_FOUND
+import static org.springframework.http.HttpStatus.PRECONDITION_FAILED
 
 @FlywayTest(locationsForMigrate = ["classpath:db/testdata/customers"], overrideLocations = false)
 @TestExecutionListeners([
@@ -99,6 +104,7 @@ class CustomersControllerIT extends BaseIT {
         exception.getMessage().contains("Customer with id " + testUUID + " does not exist.")
     }
 
+    @FlywayTest(locationsForMigrate = ["classpath:db/testdata/customers"], overrideLocations = false, invokeCleanDB = true)
     def "add customer"() {
         given: 'a customer'
         def customer = customerDto();
@@ -117,9 +123,10 @@ class CustomersControllerIT extends BaseIT {
         customersCount == 6
     }
 
+    @FlywayTest(locationsForMigrate = ["classpath:db/testdata/customers"], overrideLocations = false, invokeCleanDB = true)
     def "update customer using add method"() {
         given: 'a customer'
-        def customer = customerDto(email: "");
+        def customer = customerDto(name: "John Doe", email: "jlively0@cam.ac.uk");
 
         when: "add the customer"
         def result = customerApi.addCustomer(customer)
@@ -132,6 +139,43 @@ class CustomersControllerIT extends BaseIT {
         result.name == persistedCustomer.name
         result.email == customer.email
         result.email == persistedCustomer.email
-        customersCount == 6
+        customersCount == 5
+    }
+
+    def "insert customer with null name"() {
+        given: 'a customer with null name'
+        def customer = customerDto(name: null);
+
+        when: "add the customer"
+        def result = customerApi.addCustomer(customer)
+
+        then: "an exception is thrown"
+        def exception = thrown(FeignException)
+        exception.status() == BAD_REQUEST.value()
+    }
+
+    def "insert customer with null email"() {
+        given: 'a customer with null email'
+        def customer = customerDto(email: null);
+
+        when: "add the customer"
+        def result = customerApi.addCustomer(customer)
+
+        then: "an exception is thrown"
+        def exception = thrown(FeignException)
+        exception.status() == BAD_REQUEST.value()
+    }
+
+    def "insert customer with invalid email"() {
+        given: 'a customer with invalid email'
+        def customer = customerDto(email: "wrong_email_format");
+
+        when: "add the customer"
+        def result = customerApi.addCustomer(customer)
+
+        then: "an exception is thrown"
+        def exception = thrown(FeignException)
+        exception.status() == PRECONDITION_FAILED.value()
+        exception.getMessage().contains("Invalid email")
     }
 }
