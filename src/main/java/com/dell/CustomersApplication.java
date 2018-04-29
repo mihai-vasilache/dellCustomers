@@ -14,11 +14,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication(scanBasePackages = "com.dell")
 @EntityScan("com.dell")
 @EnableTransactionManagement
 @EnableJpaRepositories
+@EnableSwagger2
 public class CustomersApplication {
 
 	public static void main(String[] args) {

@@ -9,9 +9,10 @@ import java.util.List;
 public interface CustomersRepository extends JpaRepository<Customer, String> {
 
     @Query("Select c from Customer c where " +
-            "c.name like %:name" +
-            "% and c.email like %:email% " +
+            "upper(c.name) like upper(CONCAT('%',:name, '%')) " +
+            "and upper(c.email) like upper(CONCAT('%',:email, '%')) " +
             "order by c.name")
     List<Customer> findByNameOrEmail(String name, String email);
 
+    Customer findByEmailIgnoreCase(String email);
 }

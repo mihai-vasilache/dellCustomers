@@ -59,6 +59,10 @@ paths:
           description: Customer created
           schema:
             $ref: '#/definitions/Customer'
+        404:
+          description: Cannot add custemers using id. Use PUT /customers/{id} instead
+          schema:
+            $ref: './definitions.yml#/definitions/Error'
         default:
           description: unexpected error
           schema:
@@ -115,7 +119,7 @@ paths:
           schema:
             $ref: '#/definitions/Customer'
         404:
-          description: PricePlan not found
+          description: Customer not found
         default:
           description: unexpected error
           schema:
