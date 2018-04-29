@@ -10,5 +10,5 @@ spring:
 
 logging:
   level:
-    org.springframework: ERROR
+    org.springframework: DEBUG
     com.dell: INFO
